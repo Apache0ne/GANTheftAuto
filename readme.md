@@ -60,6 +60,29 @@ pip install -r requirements-upsample-trt.txt --extra-index-url https://pypi.nvid
 ```
 Builds ONNX/TensorRT upsampler tooling dependencies (`spandrel`, `onnxruntime-gpu`, `tensorrt`, etc.).
 
+### Model setup checklist (download/build order)
+
+1. Base GAN checkpoint (required first for all inference scripts):
+- `trained_models/gan_5_1_17.pt` (or split parts `gan_5_1_17.pt.001` + `gan_5_1_17.pt.002`).
+- Source folder: [Sentdex/GANTheftAuto trained_models](https://github.com/Sentdex/GANTheftAuto/tree/master/trained_models)
+- Direct part links:
+  - [gan_5_1_17.pt.001](https://github.com/Sentdex/GANTheftAuto/blob/master/trained_models/gan_5_1_17.pt.001)
+  - [gan_5_1_17.pt.002](https://github.com/Sentdex/GANTheftAuto/blob/master/trained_models/gan_5_1_17.pt.002)
+
+2. Legacy upsampler (default TensorRT path):
+- Required file: `trained_models/upsample---[_20]---[______3171]---[_____63420].h5`
+- Build TensorRT engine from it via `.\scripts\gtav_build_upsample_trt.bat` (produces `.engine`).
+
+3. Optional SR model families (need TensorRT engine build before use):
+- SwinIR x2 RealSR: download `.pth`, then build `.engine`.
+- SwinIR x8 classical: download `.pth`, then build `.engine`.
+- RGT (GTAV textures): download `.pth`, then build `.engine`.
+- HAT (optional): download a compatible HAT `.pth`, export ONNX, then build TensorRT engine.
+
+4. Optional HAT/RGT switchboard entries:
+- `configs/sr_switchboard.yaml` includes optional `hat_x2_trt` and `rgt_x2_trt` keys.
+- These require existing engine files (`hat_x2.engine`, `rgt_x2.engine`) or you should update paths to your built engine filenames.
+
 Run base GTA inference with no upsampler:
 ```bat
 .\scripts\gtav_inference_demo_no_upsample.bat
@@ -116,6 +139,35 @@ Run inference with RGT x4 TensorRT engine:
 .\scripts\gtav_inference_demo_realesrgan_rgt_x4_trt.bat
 ```
 Uses `trained_models/4xTextures_GTAV_rgt-s_dither.engine`.
+
+### Additional optional model download links (experiments only)
+
+These are only needed for optional SR/post-processing experiments. Baseline GTA inference does not require them beyond the base GAN checkpoint and selected upsampler.
+
+- SwinIR RealSR x2 (official release): https://github.com/JingyunLiang/SwinIR/releases/download/v0.0/003_realSR_BSRGAN_DFO_s64w8_SwinIR-M_x2_GAN.pth
+- SwinIR JPEG artifact reduction (jpeg10): https://github.com/JingyunLiang/SwinIR/releases/download/v0.0/006_CAR_DFWB_s126w7_SwinIR-M_jpeg10.pth
+- SwinIR JPEG artifact reduction (jpeg20): https://github.com/JingyunLiang/SwinIR/releases/download/v0.0/006_CAR_DFWB_s126w7_SwinIR-M_jpeg20.pth
+- SwinIR JPEG artifact reduction (jpeg30): https://github.com/JingyunLiang/SwinIR/releases/download/v0.0/006_CAR_DFWB_s126w7_SwinIR-M_jpeg30.pth
+- SwinIR JPEG artifact reduction (jpeg40): https://github.com/JingyunLiang/SwinIR/releases/download/v0.0/006_CAR_DFWB_s126w7_SwinIR-M_jpeg40.pth
+- Real-ESRGAN baseline (x4plus): https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth
+- DeSRA pretrained models: https://drive.google.com/drive/mobile/folders/1j1rr-1rQcML6DWAvVwfsQ_hslFJjLEDP?usp=sharing
+- DeSRA GAN-DeSRA models: https://drive.google.com/drive/mobile/folders/12jWdh2fiV8gGJbCnReWeZbQsmWr52fLA?usp=sharing
+- DeSRA dataset: https://drive.google.com/drive/mobile/folders/15UVQ7LkqVKo3h41L5GX0n4tnQSMsTOmK?usp=sharing
+- RealBasicVSR checkpoint: https://download.openmmlab.com/mmediting/restorers/real_basicvsr/realbasicvsr_c64b20_1x30x8_lr5e-5_150k_reds_20211104-52f77c2c.pth
+- BasicVSR++ (Vimeo90K BI): https://download.openmmlab.com/mmediting/restorers/basicvsr_pp/basicvsr_pp_vimeo90k_bi_20210427-0620ef0d.pth
+- BasicVSR++ (REDS4): https://download.openmmlab.com/mmediting/restorers/basicvsr_pp/basicvsr_pp_reds4_20210426-4843c7eb.pth
+- SPyNet dependency: https://download.openmmlab.com/mmediting/restorers/basicvsr/spynet_20210409-c6c1bd09.pth
+- RGT pretrained models: https://drive.google.com/drive/mobile/folders/1UNn5LvnfQAi6eHAHz-mTYWu8vCJs5kwu?usp=sharing
+- HAT pretrained models: https://drive.google.com/drive/u/0/folders/1pA9c0Ngi3_k25jBfVb0qYvME7xBIdnfn
+- OSEDiff repository: https://github.com/cswry/OSEDiff
+- OSEDiff weights (main): https://github.com/cswry/OSEDiff/blob/main/preset/models/osediff.pkl
+- OSEDiff weights (face): https://github.com/cswry/OSEDiff/blob/main/preset/models/osediff_face.pkl
+- Stable Diffusion 2.1 base (OSEDiff dependency): https://huggingface.co/stabilityai/stable-diffusion-2-1-base
+- RAM weight (OSEDiff dependency): https://huggingface.co/spaces/xinyu1205/recognize-anything/blob/main/ram_swin_large_14m.pth
+- DAPE (OSEDiff dependency): https://drive.google.com/file/d/1KIV6VewwO2eDC9g4Gcvgm-a0LDI7Lmwm/view?usp=drive_link
+- Thera code: https://github.com/prs-eth/thera
+- Thera weights (RDN Pro): https://huggingface.co/prs-eth/thera-rdn-pro
+- Thera weights (EDSR Pro): https://huggingface.co/prs-eth/thera-edsr-pro
 
 We are providing one of our trained models on GTA5 data as well as an 8x upsample model (part of a separate project). There's no GTA V running, this is the actual GAN output of a human playing within the GAN environment. 
 
