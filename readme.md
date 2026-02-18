@@ -52,6 +52,68 @@ You can instantly run the demo:
    scripts\gtav_inference_demo.bat
    ```
 
+## Extra Windows upsampler commands
+
+Install optional upsample conversion/runtime deps:
+```bat
+pip install -r requirements-upsample-trt.txt --extra-index-url https://pypi.nvidia.com
+```
+Builds ONNX/TensorRT upsampler tooling dependencies (`spandrel`, `onnxruntime-gpu`, `tensorrt`, etc.).
+
+Run base GTA inference with no upsampler:
+```bat
+.\scripts\gtav_inference_demo_no_upsample.bat
+```
+Shows only the native GAN output.
+
+Build TensorRT engine from bundled legacy `.h5` upsampler:
+```bat
+.\scripts\gtav_build_upsample_trt.bat
+```
+Converts `.h5 -> .onnx -> .engine`.
+
+Run inference with bundled TensorRT upsampler engine:
+```bat
+.\scripts\gtav_inference_demo_tensorrt.bat
+```
+Uses `trained_models/upsample---... .engine`.
+
+Build TensorRT engine from SwinIR x2 `.pth`:
+```bat
+.\scripts\gtav_build_realesrgan_swinir_trt.bat
+```
+Converts `003_realSR_BSRGAN_DFO_s64w8_SwinIR-M_x2_GAN.pth -> .onnx -> .engine`.
+
+Run inference with SwinIR x2 TensorRT engine:
+```bat
+.\scripts\gtav_inference_demo_realesrgan_trt.bat
+```
+Uses `trained_models/003_realSR_BSRGAN_DFO_s64w8_SwinIR-M_x2_GAN.engine`.
+
+Build TensorRT engine from SwinIR x8 `.pth`:
+```bat
+.\scripts\gtav_build_realesrgan_swinir_x8_trt.bat
+```
+Converts `001_classicalSR_DF2K_s64w8_SwinIR-M_x8.pth -> .onnx -> .engine`.
+
+Run inference with SwinIR x8 TensorRT engine:
+```bat
+.\scripts\gtav_inference_demo_realesrgan_swinir_x8_trt.bat
+```
+Uses `trained_models/001_classicalSR_DF2K_s64w8_SwinIR-M_x8.engine`.
+
+Build TensorRT engine from RGT x4 `.pth`:
+```bat
+.\scripts\gtav_build_realesrgan_rgt_x4_trt.bat
+```
+Converts `4xTextures_GTAV_rgt-s_dither.pth -> .onnx -> .engine`.
+
+Run inference with RGT x4 TensorRT engine:
+```bat
+.\scripts\gtav_inference_demo_realesrgan_rgt_x4_trt.bat
+```
+Uses `trained_models/4xTextures_GTAV_rgt-s_dither.engine`.
+
 We are providing one of our trained models on GTA5 data as well as an 8x upsample model (part of a separate project). There's no GTA V running, this is the actual GAN output of a human playing within the GAN environment. 
 
 Example actual output of these demo models:

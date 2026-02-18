@@ -29,3 +29,10 @@ env/
 .env/
 venv/
 .venv/
+
+# Generated model artifacts (keep source split checkpoints + .h5 tracked)
+trained_models/*.onnx
+trained_models/*.engine
+trained_models/*.plan
+trained_models/*.trt
+trained_models/gan_5_1_17.pt
