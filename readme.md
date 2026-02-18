@@ -83,6 +83,7 @@ Build TensorRT engine from SwinIR x2 `.pth`:
 .\scripts\gtav_build_realesrgan_swinir_trt.bat
 ```
 Converts `003_realSR_BSRGAN_DFO_s64w8_SwinIR-M_x2_GAN.pth -> .onnx -> .engine`.
+Model source: [Hugging Face - SwinIR x2 RealSR BSRGAN DFO](https://huggingface.co/uwg/upscaler/blob/7aeaa0b9279e22605ccb41ebcbc90c5c7ebfdf33/SwinIR/003_realSR_BSRGAN_DFO_s64w8_SwinIR-M_x2_GAN-with-dict-keys-params-and-params_ema.pth).
 
 Run inference with SwinIR x2 TensorRT engine:
 ```bat
@@ -95,6 +96,7 @@ Build TensorRT engine from SwinIR x8 `.pth`:
 .\scripts\gtav_build_realesrgan_swinir_x8_trt.bat
 ```
 Converts `001_classicalSR_DF2K_s64w8_SwinIR-M_x8.pth -> .onnx -> .engine`.
+Model source: [OpenModelDB - 8x classicalSR DF2K SwinIR-M](https://openmodeldb.info/models/8x-classicalSR-DF2K-s64w8-SwinIR-M).
 
 Run inference with SwinIR x8 TensorRT engine:
 ```bat
@@ -107,6 +109,7 @@ Build TensorRT engine from RGT x4 `.pth`:
 .\scripts\gtav_build_realesrgan_rgt_x4_trt.bat
 ```
 Converts `4xTextures_GTAV_rgt-s_dither.pth -> .onnx -> .engine`.
+Model source: [OpenModelDB - 4x Textures GTAV rgt-s dither](https://openmodeldb.info/models/4x-Textures-GTAV-rgt-s-dither).
 
 Run inference with RGT x4 TensorRT engine:
 ```bat
