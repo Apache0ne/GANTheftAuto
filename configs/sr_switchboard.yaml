@@ -1,0 +1,73 @@
+default_upsampler: legacy_trt
+default_post_stages: []
+
+upsamplers:
+  legacy_trt:
+    type: trt_engine
+    engine_path: ./trained_models/upsample---[_20]---[______3171]---[_____63420].engine
+    scale: 2
+    tile: null
+
+  swinir_realsr_x2_trt:
+    type: trt_engine
+    engine_path: ./trained_models/003_realSR_BSRGAN_DFO_s64w8_SwinIR-M_x2_GAN.engine
+    scale: 2
+    tile: null
+
+  pytorch_fallback:
+    type: torch
+    weights_path: ./trained_models/003_realSR_BSRGAN_DFO_s64w8_SwinIR-M_x2_GAN.pth
+    scale: 2
+    tile: null
+
+  hat_x2_trt:
+    type: trt_engine
+    engine_path: ./trained_models/hat_x2.engine
+    scale: 2
+    tile: null
+
+  rgt_x2_trt:
+    type: trt_engine
+    engine_path: ./trained_models/rgt_x2.engine
+    scale: 2
+    tile: null
+
+post_stage_configs:
+  desra_blend:
+    enabled: false
+    clean_upsampler: pytorch_fallback
+    clean_cache_dir_name: clean_sr
+    mask_blur_radius: 3
+    mask_threshold: 0.12
+    blend_strength: 0.8
+    save_mask_preview: true
+
+  vsr_realbasicvsr:
+    enabled: false
+    model_path: null
+    smoke_test_frames: 24
+    use_fp16: false
+    tile: 0
+    fallback_temporal_ema: true
+    ema_alpha: 0.65
+
+  vsr_basicvsrpp:
+    enabled: false
+    model_path: null
+    smoke_test_frames: 24
+    use_fp16: false
+    tile: 0
+    fallback_temporal_ema: true
+    ema_alpha: 0.65
+
+  osediff_refine:
+    enabled: false
+    offline_only: true
+    sample_frames: 8
+    command_template: null
+    copy_if_unavailable: true
+
+post_stages:
+  - desra_blend
+  - vsr_realbasicvsr
+  - osediff_refine

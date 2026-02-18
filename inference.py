@@ -46,8 +46,11 @@ def inference(gpu, opts):
                     with open(os.path.dirname(opts.saved_model) + '/' + part, 'rb') as lf:
                         sf.write(lf.read())
 
-    # Load the model
-    saved_model = torch.load(opts.saved_model, map_location='cpu', weights_only=False)
+    # Load trusted local checkpoints; fallback keeps compatibility with older torch versions.
+    try:
+        saved_model = torch.load(opts.saved_model, map_location='cpu', weights_only=False)
+    except TypeError:
+        saved_model = torch.load(opts.saved_model, map_location='cpu')
     opts_data = opts.data
     opts_img = opts.inference_image_path
     base_imgs = opts.show_base_images

@@ -12,6 +12,9 @@ onnxruntime-gpu
 # Needed for .pth (RealESRGAN/SwinIR etc.) -> ONNX conversion
 spandrel
 
+# Needed for experiment switchboard parsing/tools
+pyyaml
+
 # Needed for TensorRT engine build/runtime (.engine)
 # Install from NVIDIA's index on Windows:
 # pip install --extra-index-url https://pypi.nvidia.com tensorrt
