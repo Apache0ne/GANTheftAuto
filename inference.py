@@ -47,7 +47,7 @@ def inference(gpu, opts):
                         sf.write(lf.read())
 
     # Load the model
-    saved_model = torch.load(opts.saved_model, map_location='cpu')
+    saved_model = torch.load(opts.saved_model, map_location='cpu', weights_only=False)
     opts_data = opts.data
     opts_img = opts.inference_image_path
     base_imgs = opts.show_base_images
@@ -135,6 +135,18 @@ def inference(gpu, opts):
         from upsample import upsample
         upsample.load(opts.upsample_model)
 
+    def _prepare_upsample_view(output):
+        view = np.asarray(output)
+        if view.ndim == 4:
+            view = view[0]
+        if view.dtype != np.uint8:
+            view = np.clip(view, 0, 255).astype(np.uint8)
+        target_w, target_h = resized_image_size
+        h, w = view.shape[:2]
+        if w < target_w or h < target_h:
+            view = cv2.resize(view, resized_image_size, interpolation=cv2.INTER_LINEAR)
+        return view
+
     action = None
     hidden_action = 0
     prev_state = None
@@ -165,13 +177,13 @@ def inference(gpu, opts):
             if upsample is not None:
                 upsampled_img = upsample.inference(np.rollaxis(prev_state[0].cpu().numpy(), 0, 3))
                 if type(upsampled_img) is np.ndarray:
-                    cv2.imshow(f'{curdata} - upsampled', upsampled_img[0][...,::-1])
+                    cv2.imshow(f'{curdata} - upsampled', _prepare_upsample_view(upsampled_img)[...,::-1])
                 else:
-                    cv2.imshow(f'{curdata} - upsampled', upsampled_img[0][0][...,::-1])
+                    cv2.imshow(f'{curdata} - upsampled', _prepare_upsample_view(upsampled_img[0])[...,::-1])
                     if len(upsampled_img) > 1:
-                        cv2.imshow(f'{curdata} - upsampled aux1', upsampled_img[1][0][...,::-1])
+                        cv2.imshow(f'{curdata} - upsampled aux1', _prepare_upsample_view(upsampled_img[1])[...,::-1])
                     if len(upsampled_img) > 2:
-                        cv2.imshow(f'{curdata} - upsampled aux2', upsampled_img[2][0][...,::-1])
+                        cv2.imshow(f'{curdata} - upsampled aux2', _prepare_upsample_view(upsampled_img[2])[...,::-1])
 
             cv2.waitKey(1000)
 
@@ -244,13 +256,13 @@ def inference(gpu, opts):
         if upsample is not None:
             upsampled_img = upsample.inference(np.rollaxis(prev_state[0].cpu().numpy(), 0, 3))
             if type(upsampled_img) is np.ndarray:
-                cv2.imshow(f'{curdata} - upsampled', upsampled_img[0][...,::-1])
+                cv2.imshow(f'{curdata} - upsampled', _prepare_upsample_view(upsampled_img)[...,::-1])
             else:
-                cv2.imshow(f'{curdata} - upsampled', upsampled_img[0][0][...,::-1])
+                cv2.imshow(f'{curdata} - upsampled', _prepare_upsample_view(upsampled_img[0])[...,::-1])
                 if len(upsampled_img) > 1:
-                    cv2.imshow(f'{curdata} - upsampled aux1', upsampled_img[1][0][...,::-1])
+                    cv2.imshow(f'{curdata} - upsampled aux1', _prepare_upsample_view(upsampled_img[1])[...,::-1])
                 if len(upsampled_img) > 2:
-                    cv2.imshow(f'{curdata} - upsampled aux2', upsampled_img[2][0][...,::-1])
+                    cv2.imshow(f'{curdata} - upsampled aux2', _prepare_upsample_view(upsampled_img[2])[...,::-1])
 
 
 

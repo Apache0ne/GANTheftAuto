@@ -1,0 +1,18 @@
+# Base inference deps
+-r requirements.txt
+
+# Needed for .h5 -> .onnx conversion
+tensorflow
+tf2onnx
+onnx
+
+# Needed for ONNX Runtime upsample backend (.onnx)
+onnxruntime-gpu
+
+# Needed for .pth (RealESRGAN/SwinIR etc.) -> ONNX conversion
+spandrel
+
+# Needed for TensorRT engine build/runtime (.engine)
+# Install from NVIDIA's index on Windows:
+# pip install --extra-index-url https://pypi.nvidia.com tensorrt
+tensorrt
